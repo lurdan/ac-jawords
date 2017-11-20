@@ -42,17 +42,23 @@
 
 (defvar ac-jawords-split-function 'tseg-segment)
 
-(defvar ac-jawords-index nil)
+(defvar ac-jawords-index)
 (make-variable-buffer-local 'ac-jawords-index)
+(setq-default ac-jawords-index nil)
 
 (defun ac-jawords-index ()
   (if ac-jawords-index
       ac-jawords-index
-    (setq ac-jawords-index
-          (replace-regexp-in-string "^\n" ""
-                                    (replace-regexp-in-string "\\ca+\\|[！？：；。、，．]\\|[[:space:]]+" "\n"
-                                                              (buffer-substring-no-properties (point-min) (point-max)))
-                                    ))))
+    (setq ac-jawords-index (let ((lines (replace-regexp-in-string
+                                         "^\n\\|^..?\n" ""
+                                         (replace-regexp-in-string
+                                          "\\ca+\\|[！？：；。、，．]\\|[[:space:]]+" "\n"
+                                          (buffer-substring-no-properties (point-min) (point-max))))))
+                             (with-temp-buffer
+                               (insert-string lines)
+                               (delete-duplicate-lines (point-min) (point-max))
+                               (buffer-string)
+                               )))))
 
 (defun ac-jawords-candidates (&optional buffer-pred)
   (cl-loop initially (unless ac-fuzzy-enable (ac-incremental-update-word-index)) ;; 要修正
