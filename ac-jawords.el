@@ -116,13 +116,12 @@
 ;;     (requires . 2)
 ;;     (candidates . ac-jawords-candidates)))
 
-(when (featurep 'skk)
+(when (locate-library "skk")
   (with-eval-after-load "skk"
     (add-to-list 'ac-trigger-commands 'skk-insert)
     (add-to-list 'ac-trigger-commands 'skk-kakutei) ;; minibuffer を除外する advice が必要？ (cf. ac-ja.el)
-    )
-  )
-;; (add-to-list 'ac-trigger-commands 'org-self-insert-command)
+    ;; (add-to-list 'ac-trigger-commands 'org-self-insert-command)
+    ))
 
 ;;;###autoload
 (defun ac-jawords-setup ()
