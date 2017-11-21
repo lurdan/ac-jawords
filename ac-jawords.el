@@ -3,7 +3,7 @@
 ;; Copyright (C) 2017 KURASHIKI Satoru
 
 ;; Filename: ac-jawords.el
-;; Description: Consult various dictionaries and show result using tooltip
+;; Description: search written japanese words as completion candidates
 ;; Author: KURASHIKI Satoru
 ;; Created: 2017-11-08
 ;; Version: 0.0.1
@@ -42,20 +42,25 @@
 
 (defvar ac-jawords-split-function 'tseg-segment)
 
+(defvar ac-jawords-symbol-remove-regexp "[・”’＜＞【】「」『』（）]")
+(defvar ac-jawords-symbol-split-regexp "[　：；！？。、，．]")
+
 (defvar ac-jawords-index)
 (make-variable-buffer-local 'ac-jawords-index)
 (setq-default ac-jawords-index nil)
 
 (defun ac-jawords-index ()
-  (if ac-jawords-index
+  (interactive)
+  (if (and (not current-prefix-arg)
+           ac-jawords-index)
       ac-jawords-index
     (setq ac-jawords-index (let ((lines (replace-regexp-in-string
-                                         "^\n\\|^..?\n" ""
+                                         (concat "^\n\\|^..?\n\\|" ac-jawords-symbol-remove-regexp) ""
                                          (replace-regexp-in-string
-                                          "\\ca+\\|[！？：；。、，．]\\|[[:space:]]+" "\n"
+                                          (concat "\\ca+\\|[[:space:]]+\\|" ac-jawords-symbol-split-regexp) "\n"
                                           (buffer-substring-no-properties (point-min) (point-max))))))
                              (with-temp-buffer
-                               (insert-string lines)
+                               (insert lines)
                                (delete-duplicate-lines (point-min) (point-max))
                                (buffer-string)
                                )))))
@@ -131,3 +136,4 @@
 (provide 'ac-jawords)
 
 ;;; ac-jawords.el ends here
+
