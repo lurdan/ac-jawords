@@ -8,6 +8,7 @@
 ;; Created: 2017-11-08
 ;; Version: 0.0.1
 ;; Package-Version:
+;; Package-X-Original-Version:
 ;; Package-Requires: ((tinysegmenter "0") (auto-complete "0") (s "0"))
 ;; URL: https://github.com/lurdan/emacs-ac-jawords
 ;; Keywords:
@@ -94,17 +95,28 @@
                                  collect (apply 'concat (cl-subseq segs 0 i)))
                         )))))
 
+(defun ac-jawords-prefix-ignore-p ()
+  (cond ((featurep 'skk)
+         (eval-when-compile (defvar skk-henkan-mode))
+         skk-henkan-mode)
+        (t nil)))
+
 (defun ac-jawords-prefix ()
-  (save-excursion
-    (when (aref (char-category-set (char-before)) ?j)
-      (looking-back "\\cj+" nil t)
-      (looking-back (let* ((segs (funcall ac-jawords-split-function (match-string-no-properties 0)))
-                           (revs (reverse segs)))
-                      (if (> 2 (length (car revs)))
-                          (concat (cadr revs) (car revs))
-                        (car revs)))
-                    nil nil)
-      (match-beginning 0))))
+  (unless (ac-jawords-prefix-ignore-p)
+    (save-excursion
+      (when (aref (char-category-set (char-before)) ?j)
+        (looking-back "\\cj+" nil t)
+        (looking-back (let ((revs (reverse (funcall ac-jawords-split-function (match-string-no-properties 0)))))
+                        (if (> 3 (length (car revs)))
+                            (concat (cadr revs) (car revs))
+                          (car revs)))
+                      nil nil)
+        (let ((position (match-beginning 0))
+              (str (match-string-no-properties 0)))
+          ;;(message "DEBUG-str: %s (%s)" str (< 2 (length str)))
+          (if (< 2 (length str))
+              position)
+          )))))
 
 (ac-define-source jawords-in-buffer
   '((prefix . ac-jawords-prefix)
