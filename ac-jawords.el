@@ -41,10 +41,30 @@
     (cl-remove-if contain-japanese ret)))
 (advice-add 'ac-word-candidates :filter-return 'ac-word-candidates-remove-japanese)
 
-(defvar ac-jawords-split-function 'tseg-segment)
+;; Variables
+(defgroup ac-jawords nil
+  "ac-jawords group"
+  :group 'applications)
 
-(defvar ac-jawords-symbol-remove-regexp "[・”’＜＞【】「」『』（）]")
-(defvar ac-jawords-symbol-split-regexp "[　：；！？。、，．]")
+(defcustom ac-jawords-split-function 'tseg-segment
+  "分かち書きに使う関数"
+  :type 'symbol
+  :group 'ac-jawords)
+
+(defcustom ac-jawords-symbol-remove-regexp "[・”’＜＞【】「」『』（）]"
+  "候補から除去したい文字/記号の正規表現"
+  :type 'string
+  :group 'ac-jawords)
+
+(defcustom ac-jawords-symbol-split-regexp "[　：；！？。、，．]"
+  "区切り文字として使い、候補から除去する文字/記号の正規表現"
+  :type 'string
+  :group 'ac-jawords)
+
+;; (defcustom ac-jawords-update-index-frequency nil
+;;   "インデックスの更新タイミング (未実装)。any-change, after-save, any-change, timer, ..."
+;;   :type 'string
+;;   :group 'ac-jawords)
 
 (defvar ac-jawords-index)
 (make-variable-buffer-local 'ac-jawords-index)
