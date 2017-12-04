@@ -128,7 +128,9 @@
       (when (aref (char-category-set (char-before)) ?j)
         (looking-back "\\cj+" nil t)
         (looking-back (let ((revs (reverse (funcall ac-jawords-split-function (match-string-no-properties 0)))))
-                        (if (> 3 (length (car revs)))
+                        (if (and (not (string-match "\\cK" (car revs))) ;;カタカナ以外
+                                 ;;(string-match "^\\cC+$" (car revs)) ;;漢字のみ
+                                 (> 3 (length (car revs))))
                             (concat (cadr revs) (car revs))
                           (car revs)))
                       nil nil)
