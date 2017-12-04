@@ -70,21 +70,22 @@
 (make-variable-buffer-local 'ac-jawords-index)
 (setq-default ac-jawords-index nil)
 
-(defun ac-jawords-index ()
-  (interactive)
-  (if (and (not current-prefix-arg)
-           ac-jawords-index)
-      ac-jawords-index
-    (setq ac-jawords-index (let ((lines (replace-regexp-in-string
-                                         (concat "^\n\\|^..?\n\\|" ac-jawords-symbol-remove-regexp) ""
-                                         (replace-regexp-in-string
-                                          (concat "\\ca+\\|[[:space:]]+\\|" ac-jawords-symbol-split-regexp) "\n"
-                                          (buffer-substring-no-properties (point-min) (point-max))))))
-                             (with-temp-buffer
-                               (insert lines)
-                               (delete-duplicate-lines (point-min) (point-max))
-                               (buffer-string)
-                               )))))
+;; Functions
+(defun ac-jawords-index (&optional force)
+  (interactive "P")
+  (if (or current-prefix-arg
+          force
+          (null ac-jawords-index))
+      (setq ac-jawords-index (let ((lines (replace-regexp-in-string
+                                           (concat "^\n\\|^..?\n\\|" ac-jawords-symbol-remove-regexp) ""
+                                           (replace-regexp-in-string
+                                            (concat "\\ca+\\|[[:space:]]+\\|" ac-jawords-symbol-split-regexp) "\n"
+                                            (buffer-substring-no-properties (point-min) (point-max))))))
+                               (with-temp-buffer
+                                 (insert lines)
+                                 (delete-duplicate-lines (point-min) (point-max))
+                                 (buffer-string))))
+    ac-jawords-index))
 
 (defun ac-jawords-candidates (&optional buffer-pred)
   (cl-loop initially (unless ac-fuzzy-enable (ac-incremental-update-word-index)) ;; 要修正
