@@ -160,8 +160,11 @@
   (with-eval-after-load "skk"
     (add-to-list 'ac-trigger-commands 'skk-insert)
     (add-to-list 'ac-trigger-commands 'skk-kakutei) ;; minibuffer を除外する advice が必要？ (cf. ac-ja.el)
-    ;; (add-to-list 'ac-trigger-commands 'org-self-insert-command)
     ))
+
+(with-eval-after-load "org"
+  ;; (add-to-list 'ac-trigger-commands 'org-self-insert-command)
+  )
 
 ;;;###autoload
 (defun ac-jawords-setup ()
