@@ -88,8 +88,8 @@
     ac-jawords-index))
 
 (defun ac-jawords-candidates (&optional buffer-pred)
-  (cl-loop initially (unless ac-fuzzy-enable (ac-incremental-update-word-index)) ;; 要修正
-           for buffer in (buffer-list)
+  (cl-loop ;;initially (unless ac-fuzzy-enable (ac-incremental-update-word-index)) ;; 要修正
+           for buffer in (list (current-buffer)) ;;(buffer-list) ;;(current-buffer)
            if (and (or (not (integerp ac-limit)) (< (length candidates) ac-limit))
                    (if buffer-pred (funcall buffer-pred buffer) t))
            append (funcall ac-match-function
