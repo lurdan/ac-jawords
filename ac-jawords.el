@@ -136,9 +136,10 @@
                       nil nil)
         (let ((position (match-beginning 0))
               (str (match-string-no-properties 0)))
-          ;;(message "DEBUG-str: %s (%s)" str (< 2 (length str)))
           (if (< 2 (length str))
-              position)
+              (progn
+                ;;(message "ac-jawords (prefix): %s" str)
+                position))
           )))))
 
 (ac-define-source jawords-in-buffer
