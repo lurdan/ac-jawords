@@ -112,7 +112,9 @@
              append (let ((segs (funcall ac-jawords-split-function elm)))
                       (if (eq 1 (length segs))
                           segs
-                        (cl-loop for i from 1 to 2
+                        (cl-loop for i from 1 to (if (< 3 (length segs))
+                                                     3
+                                                   (length segs))
                                  collect (apply 'concat (cl-subseq segs 0 i)))
                         )))))
 
@@ -136,7 +138,7 @@
                       nil nil)
         (let ((position (match-beginning 0))
               (str (match-string-no-properties 0)))
-          (if (< 2 (length str))
+          (if (< 1 (length str))
               (progn
                 ;;(message "ac-jawords (prefix): %s" str)
                 position))
