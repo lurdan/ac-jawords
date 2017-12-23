@@ -1,0 +1,60 @@
+* ac-jawords - an auto-complete source for in-buffer Japanese words
+
+バッファ内の日本語文字列を補完候補にするための、auto-complete 用情報源です。
+
+入力途中の文字列がバッファ内に存在していれば、それなりに候補として表示してくれるかもしれません。
+表示してくれないかもしれません。
+
+[[./screenshot.png]]
+
+SKK 前提の設定や調整もありますが、一応、他の IME でも動作はするようです。
+
+** Installation
+
+必要に応じて、依存しているパッケージを追加しておいてください。
+
+#+BEGIN_SRC emacs-lisp
+(package-install 'tinysegmenter)
+(package-install 's)
+(package-install 'auto-complete)
+#+END_SRC
+
+*** MELPA (といいつつ登録してません)
+[[http://melpa.org/#/ac-jawords][http://melpa.org/packages/ac-jawords-badge.svg]]
+
+[[http://melpa.org][MELPA ]]を参照先に入れてから、 =M-x package-install ac-jawords= してください。
+
+*** Quelpa
+
+#+BEGIN_SRC emacs-lisp
+(quelpa '(ac-jawords :repo "lurdan/ac-jawords" :fetcher "github"))
+#+END_SRC
+
+*** By hand
+ac-jawords.el を =load-path= に追加して、適宜 require してください。
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "/path/to/ac-jawords.el")
+#+END_SRC
+
+** Configure
+
+#+BEGIN_SRC emacs-lisp
+(use-package ac-jawords
+  :config
+  (add-hook 'your-preferred-mode-hook 'ac-jawords-setup)
+  )
+#+END_SRC
+
+バッファからの候補抽出を手動で実施する場合は prefix つきで =(ac-jawords-index)= を実行してください。
+
+まだどのように追加するか決めてませんが、自動で更新するならこういう hook を書くと良さそうです。
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'after-save-hook (lambda () (ac-jawords-index 1)) 'make-it-local)
+#+END_SRC
+
+** Alternatives
+
+- [[https://github.com/myuhe/ac-ja.el][ac-ja]]
+- [[https://github.com/myuhe/ac-skk.el][ac-skk]]
